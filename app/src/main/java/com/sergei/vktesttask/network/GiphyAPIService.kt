@@ -12,6 +12,7 @@ private const val BASE_URL = "https://api.giphy.com/v1/gifs/"
 // Это конечно не стоит хранить в публичном репозитории, но оставляю так для удобства проверки :)
 private const val API_KEY = "ARGGt37zAdECsh7l9yZL9eQwS1DR5KSP"
 
+
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
     .build()
@@ -21,6 +22,15 @@ private val retrofit = Retrofit.Builder()
     .baseUrl(BASE_URL)
     .build()
 
+/**
+ * Uses Retrofit and Moshi to
+ * get response from Giphy.
+ * Для получения ответа от Giphy
+ * использую Retrofit для запроса к АПИ
+ * и Moshi для преобразования JSON
+ * в дата класс.
+ * Используется синглтон.
+ */
 interface GiphyAPIService {
     @GET("search?api_key=${API_KEY}")
     suspend fun getGiphySearchResponse(

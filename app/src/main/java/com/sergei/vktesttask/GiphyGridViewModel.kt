@@ -10,9 +10,10 @@ import com.sergei.vktesttask.network.GiphyGifData
 import kotlinx.coroutines.launch
 import java.util.*
 
-private const val GIFS_PER_LOAD = 25
+const val GIFS_PER_LOAD = 25
+const val GIFS_ON_PAN_LOAD = 10
 
-enum class APIStatus { WAITING, LOADING, ERROR, FINISHED }
+enum class APIStatus { WAITING, LOADING, NO_RESULTS, ERROR, FINISHED }
 
 class GiphyGridViewModel : ViewModel() {
 
@@ -22,23 +23,24 @@ class GiphyGridViewModel : ViewModel() {
     private val _gifs = MutableLiveData<MutableList<GiphyGifData>>(mutableListOf<GiphyGifData>())
     val gifs: LiveData<MutableList<GiphyGifData>> = _gifs
 
-    /*private val _currentGifsOffset = MutableLiveData<Int>(0)
-    val currentGifsOffset: LiveData<Int> = _currentGifsOffset*/
+    private val _currentSearchQuery = MutableLiveData<String>("")
+    //val currentSearchQuery: LiveData<String> = _currentSearchQuery
 
-    private val _currentSearchQuery = MutableLiveData<String>()
-    val currentSearchQuery: LiveData<String> = _currentSearchQuery
-
+    /**
+     * Called on search in SearchView.
+     * Вызывается при запросе.
+     */
     fun initGifsSearch(searchQuery: String) {
-
         // Clear any GIFs from last search
         clearGifsList()
+        _currentSearchQuery.value = searchQuery
 
         viewModelScope.launch {
             _status.value = APIStatus.LOADING
             try {
                 val response = GiphyAPI.retrofitAPIService
                         .getGiphySearchResponse(
-                            searchQuery,
+                            _currentSearchQuery.value!!,
                             GIFS_PER_LOAD,
                             _gifs.value?.size ?: 0,
                             "g",
@@ -47,10 +49,15 @@ class GiphyGridViewModel : ViewModel() {
 
                 _gifs.value?.addAll(response.data)
 
-                _status.value = APIStatus.FINISHED
+                if (gifs.value?.size != 0) {
+                    _status.value = APIStatus.FINISHED
+                } else {
+                    _status.value = APIStatus.NO_RESULTS
+                }
+
                 Log.d(
                     "viewModel API coroutine",
-                    "API response: loaded, size: ${gifs.value?.size}"
+                    "API response: loaded, size: ${_gifs.value?.size ?: 0}"
                 )
             } catch (e: Exception) {
                 Log.e("viewModel API coroutine", "${e.message}")
@@ -59,12 +66,36 @@ class GiphyGridViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Used for pagination.
+     * Loads next gifs
+     * with given current offset.
+     * Загружает больше гиф по
+     * тому жу запросу.
+     */
+    fun loadMoreGifs() {
+        viewModelScope.launch {
+            _status.value = APIStatus.LOADING
+
+            val response = GiphyAPI.retrofitAPIService
+                .getGiphySearchResponse(
+                    _currentSearchQuery.value!!,
+                    GIFS_ON_PAN_LOAD,
+                    _gifs.value?.size ?: 0,
+                    "g",
+                    Locale.getDefault().language
+                )
+
+            _gifs.value!!.addAll(response.data)
+        }
+    }
+
     private fun clearGifsList() {
         _gifs.value?.clear()
     }
 
     init {
-        initGifsSearch("cheese")
+        initGifsSearch("")
         Log.d("viewModel", "initialized")
     }
 }

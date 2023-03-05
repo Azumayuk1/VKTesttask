@@ -1,16 +1,16 @@
 package com.sergei.vktesttask
 
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.ListAdapter
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sergei.vktesttask.databinding.GridViewItemBinding
 import com.sergei.vktesttask.network.GiphyGifData
 
-class GiphyGridAdapter :
+class GiphyGridAdapter() :
     ListAdapter<GiphyGifData, GiphyGridAdapter.GifViewHolder>(
         DiffCallback
     ) {
@@ -24,14 +24,27 @@ class GiphyGridAdapter :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GifViewHolder {
-        return GifViewHolder(GridViewItemBinding.inflate(
-            LayoutInflater.from(parent.context)
-        ))
+        return GifViewHolder(
+            GridViewItemBinding.inflate(
+                LayoutInflater.from(parent.context)
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: GifViewHolder, position: Int) {
         val gif = getItem(position)
         holder.bind(gif)
+
+        // Переход к фрагменту с деталями гифки
+        holder.itemView.setOnClickListener {
+            val action = GiphyGridFragmentDirections
+                .actionGiphyGridFragmentToGifDetailFragment(
+                    gif.images.originalImage.gifSourceUrl,
+                    gif.id,
+                    gif.title
+                )
+            holder.itemView.findNavController().navigate(action)
+        }
     }
 
     companion object DiffCallback : DiffUtil.ItemCallback<GiphyGifData>() {

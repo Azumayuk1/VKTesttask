@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="gifSrcUrl"
+            type="String" />
+
+        <variable
+            name="gifTitleArg"
+            type="String" />
+
+        <variable
+            name="gifIdArg"
+            type="String" />
+    </data>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".GifDetailFragment">
+
+            <ImageView
+                android:id="@+id/gif_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:importantForAccessibility="no"
+                android:scaleType="fitCenter"
+
+                app:gifOrigUrl="@{gifSrcUrl}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_max="1000dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@tools:sample/backgrounds/scenic" />
+
+            <ImageView
+                android:id="@+id/gif_id_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:contentDescription="@string/gif_id"
+                android:src="@drawable/ic_id_gif"
+                app:layout_constraintStart_toEndOf="@id/gif_view"
+                app:layout_constraintTop_toTopOf="@+id/gif_view" />
+
+            <TextView
+                android:id="@+id/gif_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                app:gifId="@{gifIdArg}"
+                app:layout_constraintBottom_toBottomOf="@+id/gif_id_icon"
+                app:layout_constraintStart_toEndOf="@+id/gif_id_icon"
+                app:layout_constraintTop_toTopOf="@+id/gif_id_icon"
+                app:layout_constraintWidth_max="100dp"
+                tools:text="Abc123" />
+
+            <ImageView
+                android:id="@+id/gif_title_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:contentDescription="@string/gif_title"
+                android:src="@drawable/ic_title"
+                app:layout_constraintStart_toStartOf="@+id/gif_id_icon"
+                app:layout_constraintTop_toBottomOf="@+id/gif_id" />
+
+            <TextView
+                android:id="@+id/gif_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                app:gifTitle="@{gifTitleArg}"
+                app:layout_constraintBottom_toBottomOf="@+id/gif_title_icon"
+                app:layout_constraintStart_toEndOf="@+id/gif_title_icon"
+                app:layout_constraintTop_toTopOf="@+id/gif_title_icon"
+                app:layout_constraintWidth_max="100dp"
+                tools:text="GifTitle" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

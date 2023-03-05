@@ -2,9 +2,13 @@ package com.sergei.vktesttask.network
 
 import com.squareup.moshi.Json
 
+/**
+ * Transforms Giphy response into
+ * usable data class.
+ * Преобразовывает ответ сайта.
+ */
 data class GiphyResponse(
     @Json(name = "data") val data: List<GiphyGifData>,
-    //@Json(name = "pagination") val paginationData: String
 )
 
 data class GiphyGifData(

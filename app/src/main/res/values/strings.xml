@@ -2,4 +2,7 @@
     <string name="app_name">VKTaskGiphy</string>
     <string name="giphy">Giphy</string>
     <string name="search">Search</string>
+    <string name="gif_id">Gif ID</string>
+    <string name="gif_title">Gif title</string>
+    <string name="try_search">Try searching millions of GIFs on Giphy!</string>
 </resources>
