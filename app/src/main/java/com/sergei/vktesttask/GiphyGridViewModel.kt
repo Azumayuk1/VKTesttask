@@ -73,6 +73,11 @@ class GiphyGridViewModel : ViewModel() {
                     Locale.getDefault().language
                 )
             _gifs.value!!.addAll(response.data)
+
+            Log.d(
+                "viewModel API coroutine pagination",
+                "API response: loaded, current size: ${_gifs.value?.size ?: 0}"
+            )
         }
     }
 
