@@ -13,12 +13,9 @@ import java.util.*
 const val GIFS_PER_LOAD = 25
 const val GIFS_ON_PAN_LOAD = 10
 
-enum class APIStatus { WAITING, LOADING, NO_RESULTS, ERROR, FINISHED }
-
+//enum class APIStatus { WAITING, LOADING, NO_RESULTS, ERROR, FINISHED }
 class GiphyGridViewModel : ViewModel() {
-
-    private val _status = MutableLiveData(APIStatus.WAITING)
-    val status: LiveData<APIStatus> = _status
+    //private val _status = MutableLiveData(APIStatus.WAITING)
 
     private val _gifs = MutableLiveData<MutableList<GiphyGifData>>(mutableListOf<GiphyGifData>())
     val gifs: LiveData<MutableList<GiphyGifData>> = _gifs
@@ -36,7 +33,6 @@ class GiphyGridViewModel : ViewModel() {
         _currentSearchQuery.value = searchQuery
 
         viewModelScope.launch {
-            _status.value = APIStatus.LOADING
             try {
                 val response = GiphyAPI.retrofitAPIService
                         .getGiphySearchResponse(
@@ -49,19 +45,12 @@ class GiphyGridViewModel : ViewModel() {
 
                 _gifs.value?.addAll(response.data)
 
-                if (gifs.value?.size != 0) {
-                    _status.value = APIStatus.FINISHED
-                } else {
-                    _status.value = APIStatus.NO_RESULTS
-                }
-
                 Log.d(
                     "viewModel API coroutine",
                     "API response: loaded, size: ${_gifs.value?.size ?: 0}"
                 )
             } catch (e: Exception) {
                 Log.e("viewModel API coroutine", "${e.message}")
-                _status.value = APIStatus.ERROR
             }
         }
     }
@@ -75,8 +64,6 @@ class GiphyGridViewModel : ViewModel() {
      */
     fun loadMoreGifs() {
         viewModelScope.launch {
-            _status.value = APIStatus.LOADING
-
             val response = GiphyAPI.retrofitAPIService
                 .getGiphySearchResponse(
                     _currentSearchQuery.value!!,
@@ -85,7 +72,6 @@ class GiphyGridViewModel : ViewModel() {
                     "g",
                     Locale.getDefault().language
                 )
-
             _gifs.value!!.addAll(response.data)
         }
     }
